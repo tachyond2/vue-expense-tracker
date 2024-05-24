@@ -2,8 +2,8 @@
   <Notifications />
   <Header/>
   <div class="container">
-    <Balance/>
-    <IncomeExpense/>
+    <Balance :total/>
+    <IncomeExpense :expense="expense" :income="income"/>
     <TransactionList :transactions="transactions"/>
     <AddTransaction @transactionSubmitted="handleTransactionSubmitted"/>
   </div>
@@ -17,10 +17,33 @@ import TransactionList from './components/TransactionList.vue';
 import AddTransaction from './components/AddTransaction.vue';
 
 
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 const transactions = ref([])
 
+// Get Total
+const total = computed(() => {
+  return transactions.value.reduce((acc, transaction) => {
+    return acc + transaction.amount;
+  }, 0);
+})
 
+// Get income
+const income = computed(() => {
+  return transactions.value
+  .filter( t => t.amount > 0)
+  .reduce((acc, transaction) => acc + transaction.amount, 0)
+  .toFixed(2)
+})
+
+// Get expense
+const expense = computed(() => {
+  return transactions.value
+  .filter( t => t.amount < 0)
+  .reduce((acc, transaction) => acc + transaction.amount, 0)
+  .toFixed(2)
+})
+
+// Submit transaction
 const handleTransactionSubmitted = (transactionData) => {
     console.log('receive data from emit', transactionData)
     transactions.value.push({

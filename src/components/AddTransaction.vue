@@ -40,5 +40,7 @@ const onSubmit = () => {
     amount: parseFloat(amount.value)
   }
   emit('transactionSubmitted', transactionDate)
+  item.value=''
+  amount.value=''
 }
 </script>
