@@ -23,8 +23,16 @@ import { useNotification } from "@kyvg/vue3-notification";
 
 const notification = useNotification()
 
-import { computed, ref } from 'vue'
+import { computed, ref, onMounted} from 'vue'
 const transactions = ref([])
+
+// Use localSotrage
+onMounted(() => {
+  const saveTransactions = JSON.parse(localStorage.getItem('transactions'))
+  if(saveTransactions){
+    transactions.value = saveTransactions
+  }
+})
 
 // Get Total
 const total = computed(() => {
@@ -57,6 +65,7 @@ const handleTransactionSubmitted = (transactionData) => {
       item: transactionData.item,
       amount: transactionData.amount
     })
+    saveTransactionsToLocalStorage()
 
     notification.notify({
     title:'Transaction added.',
@@ -67,9 +76,15 @@ const handleTransactionSubmitted = (transactionData) => {
 // Delete transaction
 const handleTransactionDeleted = (id) => {
   transactions.value = transactions.value.filter(t => t.id !== id)
+  saveTransactionsToLocalStorage()
   notification.notify({
     title:'Transaction deleted.',
     type: 'success'
   })
+}
+
+// Save transaction to local storage 
+const saveTransactionsToLocalStorage = () => {
+  localStorage.setItem('transactions', JSON.stringify(transactions.value))
 }
 </script>
