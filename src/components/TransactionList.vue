@@ -7,17 +7,24 @@
     :class="transaction.amount < 0 ? 'minus' : 'plus'"
     >
       {{ transaction.item }} <span>${{transaction.amount}}</span>
-      <button class="delete-btn">x</button>
+      <button class="delete-btn" @click="onClick(transaction.id)">x</button>
     </li>
   </ul>
 </template>
 
 <script setup>
 
-  const props = defineProps({
+ defineProps({
     transactions:{
       type: Array,
       required: true
     }
   })
+
+  const emit = defineEmits(['transactionDeleted'])
+
+  const onClick = (id) => {
+    emit('transactionDeleted', id)
+  }
+
 </script>

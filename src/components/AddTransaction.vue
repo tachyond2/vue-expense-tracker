@@ -30,7 +30,7 @@ const onSubmit = () => {
   if(!item.value || !amount.value){
     notification.notify({
       title: "Both fields must be filled",
-      // type: 'error',
+      type: 'error',
     });
     return
   }

@@ -3,8 +3,11 @@
   <Header/>
   <div class="container">
     <Balance :total/>
-    <IncomeExpense :expense="expense" :income="income"/>
-    <TransactionList :transactions="transactions"/>
+    <IncomeExpense :expense="+expense" :income="+income"/>
+    <TransactionList 
+    :transactions="transactions" 
+    @transactionDeleted="handleTransactionDeleted"
+    />
     <AddTransaction @transactionSubmitted="handleTransactionSubmitted"/>
   </div>
 </template>
@@ -16,6 +19,9 @@ import IncomeExpense from './components/IncomeExpense.vue';
 import TransactionList from './components/TransactionList.vue';
 import AddTransaction from './components/AddTransaction.vue';
 
+import { useNotification } from "@kyvg/vue3-notification";
+
+const notification = useNotification()
 
 import { computed, ref } from 'vue'
 const transactions = ref([])
@@ -43,7 +49,7 @@ const expense = computed(() => {
   .toFixed(2)
 })
 
-// Submit transaction
+// Add transaction
 const handleTransactionSubmitted = (transactionData) => {
     console.log('receive data from emit', transactionData)
     transactions.value.push({
@@ -51,5 +57,19 @@ const handleTransactionSubmitted = (transactionData) => {
       item: transactionData.item,
       amount: transactionData.amount
     })
+
+    notification.notify({
+    title:'Transaction added.',
+    type: 'success'
+  })
+}
+
+// Delete transaction
+const handleTransactionDeleted = (id) => {
+  transactions.value = transactions.value.filter(t => t.id !== id)
+  notification.notify({
+    title:'Transaction deleted.',
+    type: 'success'
+  })
 }
 </script>
